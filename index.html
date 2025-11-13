@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Studio Client Management</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <h1>SEVENTH HEAVEN PHOTOGRAPHY</h1>
+        <p>Track wedding clients, payments, deliverables, and reports.</p>
+      </div>
+      <div class="header-actions">
+        <button id="addClientBtn" type="button">Add Client</button>
+        <button id="monthlyReportBtn" type="button">Monthly Report</button>
+        <button id="yearlyReportBtn" type="button">Yearly Report</button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <section class="summary-section" aria-label="Client summary">
+        <div class="summary-grid">
+          <article class="summary-card">
+            <span class="summary-label">Total Clients</span>
+            <span class="summary-value" id="summaryTotalClients">0</span>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Upcoming This Month</span>
+            <span class="summary-value" id="summaryUpcoming">0</span>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Pending Payments</span>
+            <span class="summary-value" id="summaryPending">0</span>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Advance Collected (INR)</span>
+            <span class="summary-value" id="summaryAdvance">—</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Add / Edit Client</h2>
+        <form id="clientForm">
+          <input type="hidden" id="clientId" name="clientId" />
+
+          <div class="form-grid">
+            <label>
+              Client Name
+              <input type="text" id="clientName" name="clientName" required placeholder="e.g. Alex and Jamie" />
+            </label>
+
+            <label>
+              Wedding Date
+              <input type="date" id="weddingDate" name="weddingDate" required />
+            </label>
+
+            <label>
+              Venue Address
+              <input type="text" id="venue" name="venue" required placeholder="e.g. 123 Ocean Ave, Miami" />
+            </label>
+
+            <label>
+              Google Maps Link (optional)
+              <input type="url" id="mapLink" name="mapLink" placeholder="https://maps.google.com/..." />
+            </label>
+
+            <label>
+              Package Details
+              <input type="text" id="packageDetails" name="packageDetails" placeholder="e.g. Premium Photo & Video" />
+            </label>
+
+            <label>
+              Deliverables
+              <textarea id="deliverables" name="deliverables" rows="2" placeholder="e.g. Edited photos, album, highlight film"></textarea>
+            </label>
+
+            <label>
+              Payment Info
+              <textarea
+                id="paymentInfo"
+                name="paymentInfo"
+                rows="2"
+                placeholder="e.g. Total: ₹3,40,000 · Balance due on 15/04"
+              ></textarea>
+            </label>
+
+            <label>
+              Advance Payment (INR)
+              <input
+                type="number"
+                id="advancePayment"
+                name="advancePayment"
+                min="0"
+                step="0.01"
+                placeholder="e.g. 100000"
+              />
+            </label>
+
+            <label>
+              Payment Status
+              <select id="paymentStatus" name="paymentStatus">
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Paid">Paid</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" id="saveClientBtn">Save Client</button>
+            <button type="button" id="resetFormBtn" class="secondary">Reset</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="table-section">
+        <div class="table-header">
+          <h2>Clients</h2>
+          <input type="search" id="searchInput" placeholder="Search by client or venue..." />
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Wedding Date</th>
+                <th>Venue</th>
+                <th>Package</th>
+                <th>Payment Status</th>
+                <th>Advance (INR)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="clientsTableBody">
+              <tr>
+                <td colspan="7" class="empty-row">No clients yet. Add your first client above.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="clientsCardList" class="client-card-list" aria-live="polite"></div>
+      </section>
+
+      <aside class="details-panel" id="detailsPanel">
+        <h2>Client Details</h2>
+        <p class="empty-state">Select a client to see quick details.</p>
+      </aside>
+    </main>
+
+    <div id="reportModal" class="modal" hidden>
+      <div class="modal-content">
+        <header>
+          <h2 id="reportTitle">Report</h2>
+          <button id="closeReportBtn" type="button" aria-label="Close report">&times;</button>
+        </header>
+        <div id="reportBody"></div>
+      </div>
+    </div>
+
+    <template id="detailsTemplate">
+      <div class="detail-row">
+        <strong>Client:</strong>
+        <span data-field="clientName"></span>
+      </div>
+      <div class="detail-row">
+        <strong>Wedding Date:</strong>
+        <span data-field="weddingDate"></span>
+      </div>
+      <div class="detail-row">
+        <strong>Venue:</strong>
+        <span data-field="venue"></span>
+      </div>
+      <div class="detail-row">
+        <strong>Package:</strong>
+        <span data-field="packageDetails"></span>
+      </div>
+      <div class="detail-row">
+        <strong>Deliverables:</strong>
+        <span data-field="deliverables"></span>
+      </div>
+      <div class="detail-row">
+        <strong>Payment Info:</strong>
+        <span data-field="paymentInfo"></span>
+      </div>
+      <div class="detail-row">
+        <strong>Advance Payment:</strong>
+        <span data-field="advancePayment"></span>
+      </div>
+      <div class="detail-row">
+        <strong>Payment Status:</strong>
+        <span data-field="paymentStatus"></span>
+      </div>
+      <div class="map-container" data-field="mapContainer"></div>
+    </template>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
+
